@@ -1,8 +1,8 @@
 import asyncio
 from typing import List, Optional, Callable, Any
 
-from myscale_agent.base.retriever import Retriever
-from myscale_agent.queries.base import MyScaleQuery
+from myscalekb_agent.base.retriever import Retriever
+from myscalekb_agent.queries.base import MyScaleQuery
 
 
 class TitleRetriever(Retriever):

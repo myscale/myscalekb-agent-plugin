@@ -1,6 +1,6 @@
 from langchain_core.messages import SystemMessage
 
-from myscale_agent.base.prompt import Prompt
+from myscalekb_agent.base.prompt import Prompt
 
 
 class SimpleRagPrompt(Prompt):

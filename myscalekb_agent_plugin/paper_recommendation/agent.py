@@ -4,14 +4,14 @@ from langchain.agents import create_openai_tools_agent
 from langchain.agents.output_parsers.tools import ToolAgentAction
 from langchain_core.runnables import RunnableConfig
 
-from myscale_agent.agents.control_tags import ControlTags
-from myscale_agent.agents.slide_deck_ai.helpers.json_helper import load_and_fix_json
-from myscale_agent.agents.state import AgentState
-from myscale_agent.base.graph_builder import node, conditional_edge, entry, GraphBuilder, edge
-from myscale_agent.base.sub_agent import SubAgent
-from myscale_agent_plugin.paper_recommendation.prompt import PaperRecommendationPrompt
-from myscale_agent_plugin.paper_recommendation.retrievers import TitleRetriever, TopicRetriever
-from myscale_agent_plugin.paper_recommendation.tools import SimilarityRecommendation, TopicBasedRecommendation
+from myscalekb_agent.agents.control_tags import ControlTags
+from myscalekb_agent.agents.slide_deck_ai.helpers.json_helper import load_and_fix_json
+from myscalekb_agent.agents.state import AgentState
+from myscalekb_agent.base.graph_builder import node, conditional_edge, entry, GraphBuilder, edge
+from myscalekb_agent.base.sub_agent import SubAgent
+from myscalekb_agent_plugin.paper_recommendation.prompt import PaperRecommendationPrompt
+from myscalekb_agent_plugin.paper_recommendation.retrievers import TitleRetriever, TopicRetriever
+from myscalekb_agent_plugin.paper_recommendation.tools import SimilarityRecommendation, TopicBasedRecommendation
 
 
 class PaperRecommendationAgent(SubAgent):
