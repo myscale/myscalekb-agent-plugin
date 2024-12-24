@@ -26,6 +26,24 @@ echo 'ENABLED_PLUGIN_AGENTS="PaperRecommendationAgent,"' >> .env
 docker-compose -f docker-compose-linux-cpu.yaml up -d --volume ../myscalekb-agent-plugin/myscalekb_agent_plugin:/app/myscalekb_agent_plugin agent 
 ```
 
+### 查看日志
+
+使用下面的命令来验证 Plugin SubAgent 是否正确载入：
+```shell
+docker-compose -f docker-compose-linux-cpu.yaml logs agent --since 10m | grep "PaperRecommendationAgent"
+```
+
+使用下面的命令来查看 Agent Workflow 的执行情况：
+```shell
+docker-compose -f docker-compose-linux-cpu.yaml logs agent --since 10m | grep "QueryTrace"
+```
+
+也可以通过 TraceId 来定位具体的一次请求执行情况，假设 TraceId 为 `5dd78e08ae994ef898704052b84447b7a373`
+```shell
+docker-compose -f docker-compose-linux-cpu.yaml logs agent --since 10m | grep -F "QueryTrace[5dd78e08ae994ef898704052b84447b7a373]"
+```
+
+
 ## 如何开发 Plugin
 
 MyScaleKB Agent Plugin 的介绍及开发流程请阅读 [MyScaleKB Agent 二次开发用户指南](https://icni9182qqbe.feishu.cn/wiki/V4lwwlSHtilnRqkWybhcMMI8nWb?fromScene=spaceOverview)。
