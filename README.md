@@ -23,7 +23,7 @@ cd myscalekb-deployment
 echo 'ENABLED_PLUGIN_AGENTS="PaperRecommendationAgent,"' >> .env
 
 # 使用下面的命令 restart agent service (以 cpu yaml 为例)
-docker-compose -f docker-compose-linux-cpu.yaml up -d --volume ../myscalekb-agent-plugin/myscalekb_agent_plugin:/app/myscalekb_agent_plugin agent 
+docker-compose -f docker-compose-linux-cpu.yaml -v ../myscalekb-agent-plugin/myscalekb_agent_plugin:/app/myscalekb_agent_plugin up -d agent
 ```
 
 ### 查看日志
