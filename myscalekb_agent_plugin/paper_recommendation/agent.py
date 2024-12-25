@@ -4,11 +4,11 @@ from langchain.agents import create_openai_tools_agent
 from langchain.agents.output_parsers.tools import ToolAgentAction
 from langchain_core.runnables import RunnableConfig
 
-from myscalekb_agent.agents.control_tags import ControlTags
-from myscalekb_agent.agents.slide_deck_ai.helpers.json_helper import load_and_fix_json
-from myscalekb_agent.agents.state import AgentState
+from myscalekb_agent.base.control_tags import ControlTags
 from myscalekb_agent.base.graph_builder import node, conditional_edge, entry, GraphBuilder, edge
+from myscalekb_agent.base.state import AgentState
 from myscalekb_agent.base.sub_agent import SubAgent
+from myscalekb_agent.base.utils import JsonHelper
 from myscalekb_agent_plugin.paper_recommendation.prompt import PaperRecommendationPrompt
 from myscalekb_agent_plugin.paper_recommendation.retrievers import TitleRetriever, TopicRetriever
 from myscalekb_agent_plugin.paper_recommendation.tools import SimilarityRecommendation, TopicBasedRecommendation
@@ -98,7 +98,7 @@ class PaperRecommendationAgent(SubAgent):
         contexts = await self.title_retriever.retrieve(queries=[base_paper], format_output=self._format_chunk)
         runnable = self.prompt.generate_topics_prompt(contexts) | self.llm
         response = await runnable.ainvoke(data, config=RunnableConfig(tags=[ControlTags.EXCLUDE_STREAM]))
-        json_result = load_and_fix_json(response.content)
+        json_result = JsonHelper.load_and_fix_json(response.content)
         return {"topics": json_result["topics"], "base_paper": base_paper}
 
     @node

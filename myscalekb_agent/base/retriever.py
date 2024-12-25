@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Callable, Any
 
 from clickhouse_connect.driver import Client
-from myscale_llmhub.dsl import EmbeddingModel
+from langchain_core.embeddings.embeddings import Embeddings
 
-from myscalekb_agent.schemas.knowledge.knowledge_scope import KnowledgeScope
+from myscalekb_agent.base.schemas.knowledge_base import KnowledgeScope
 
 
 class Retriever(ABC):
@@ -13,7 +13,7 @@ class Retriever(ABC):
     """
 
     def __init__(
-        self, embedding_model: EmbeddingModel, myscale_client: Client, knowledge_scopes: List[KnowledgeScope] = None
+        self, embedding_model: Embeddings, myscale_client: Client, knowledge_scopes: List[KnowledgeScope] = None
     ):
         self.embedding_model = embedding_model
         self.myscale_client = myscale_client

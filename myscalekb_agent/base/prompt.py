@@ -2,14 +2,20 @@ from abc import ABC
 from typing import List
 
 from langchain_core.messages import BaseMessage
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, HumanMessagePromptTemplate
-from myscale_llmhub.dsl.memory import MyScaleChatMemory
+from langchain_core.prompts import (
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+    HumanMessagePromptTemplate,
+)
 
 
 class Prompt(ABC):
     """Base class for prompts."""
 
-    def __init__(self, memory: MyScaleChatMemory):
+    def __init__(self, memory):
+        """
+        :param memory: MyScaleChatMemory has SQLChatMessageHistory built in
+        """
         self.memory = memory
 
     def prompt_template(

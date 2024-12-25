@@ -7,7 +7,7 @@ from typing import TypedDict
 from langchain_core.runnables.base import RunnableLike
 from langgraph.graph import StateGraph
 
-from myscalekb_agent.schemas.agent_metadata import AgentMetadata
+from myscalekb_agent.base.schemas.agent_metadata import AgentMetadata
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,12 @@ def node(func):
         trace_id = data.get("trace_id", "unknown")
         agent_metadata = AgentMetadata(name=self.name(), step=func.__name__)
 
-        logger.info("QueryTrace[%s] Beginning to run %s step.", trace_id, func.__name__)
+        logger.info(
+            "QueryTrace[%s] Beginning to run %s.%s step.",
+            trace_id,
+            self.name(),
+            func.__name__,
+        )
         start_time = datetime.datetime.now()
 
         try:
@@ -43,8 +48,9 @@ def node(func):
             duration = (datetime.datetime.now() - start_time).total_seconds()
 
             logger.info(
-                "QueryTrace[%s] Completed running %s step, duration: %.3f seconds",
+                "QueryTrace[%s] Completed running %s.%s step, duration: %.3f seconds",
                 trace_id,
+                self.name(),
                 func.__name__,
                 duration,
             )
@@ -57,7 +63,9 @@ def node(func):
             return result
 
         except Exception as e:
-            logger.error("QueryTrace[%s] Error in %s step: %s", trace_id, func.__name__, str(e))
+            logger.error(
+                "QueryTrace[%s] Error in %s step: %s", trace_id, func.__name__, str(e)
+            )
             raise
 
     wrapper._is_node = True
@@ -147,12 +155,13 @@ class GraphBuilder:
 
     END = "__end__"
 
-    def _build_graph(self, state_definition: TypedDict):
+    def _build_graph(self, state_definition: TypedDict, compiled: bool = True):
         workflow = StateGraph(state_definition)
 
-        for name, member in inspect.getmembers(self.__class__, predicate=inspect.isfunction):
+        for name, member in inspect.getmembers(
+            self.__class__, predicate=inspect.isfunction
+        ):
             method = getattr(self.__class__, name)
-            print(f"Checking method {name}: {method.__dict__}")
 
             if hasattr(method, "_is_node"):
                 bound_method = method.__get__(self, self.__class__)
@@ -165,7 +174,9 @@ class GraphBuilder:
                 print(f"Added edge from {name} to {target}")
 
             if hasattr(method, "_is_conditional_edge"):
-                workflow.add_conditional_edges(source=name, path=method._path, path_map=method._path_map)
+                workflow.add_conditional_edges(
+                    source=name, path=method._path, path_map=method._path_map
+                )
                 print(f"Added conditional edge from {name}")
 
             if hasattr(method, "_is_entry"):
@@ -175,9 +186,15 @@ class GraphBuilder:
             if hasattr(method, "_is_conditional_entry"):
                 bound_method = method.__get__(self, self.__class__)
                 path_map = method._path_map
-                workflow.set_conditional_entry_point(path=bound_method, path_map=path_map)
+                workflow.set_conditional_entry_point(
+                    path=bound_method, path_map=path_map
+                )
                 print(f"Added conditional entry {path_map}")
 
-        graph = workflow.compile()
-        print("Build graph successfully", graph)
-        return graph
+        if compiled:
+            graph = workflow.compile()
+            print("Build graph successfully", graph)
+            return graph
+
+        print("Return workflow not complied.")
+        return workflow

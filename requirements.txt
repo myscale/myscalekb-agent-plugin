@@ -1,0 +1,17 @@
+# build required
+twine
+setuptools
+wheel
+
+# app required
+# langchain family
+langchain==0.3.2
+langchain-openai==0.2.2
+langchain-community==0.3.1
+langgraph==0.2.35
+
+# others
+nanoid~=2.0.0
+clickhouse-connect~=0.7.18
+json5~=0.9.25
+json_repair~=0.30.0
