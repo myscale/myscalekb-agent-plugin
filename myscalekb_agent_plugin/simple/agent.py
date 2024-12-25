@@ -1,5 +1,5 @@
-from myscalekb_agent.base.graph_builder import node, edge
-from myscalekb_agent.base.sub_agent import SubAgent
+from myscalekb_agent_base.graph_builder import node, edge
+from myscalekb_agent_base.sub_agent import SubAgent
 
 
 class SimpleRag(SubAgent):

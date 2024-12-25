@@ -4,11 +4,11 @@ from langchain.agents import create_openai_tools_agent
 from langchain.agents.output_parsers.tools import ToolAgentAction
 from langchain_core.runnables import RunnableConfig
 
-from myscalekb_agent.base.control_tags import ControlTags
-from myscalekb_agent.base.graph_builder import node, conditional_edge, entry, GraphBuilder, edge
-from myscalekb_agent.base.state import AgentState
-from myscalekb_agent.base.sub_agent import SubAgent
-from myscalekb_agent.base.utils import JsonHelper
+from myscalekb_agent_base.control_tags import ControlTags
+from myscalekb_agent_base.graph_builder import node, conditional_edge, entry, GraphBuilder, edge
+from myscalekb_agent_base.state import AgentState
+from myscalekb_agent_base.sub_agent import SubAgent
+from myscalekb_agent_base.utils import JsonHelper
 from myscalekb_agent_plugin.paper_recommendation.prompt import PaperRecommendationPrompt
 from myscalekb_agent_plugin.paper_recommendation.retrievers import TitleRetriever, TopicRetriever
 from myscalekb_agent_plugin.paper_recommendation.tools import SimilarityRecommendation, TopicBasedRecommendation

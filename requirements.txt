@@ -1,0 +1,1 @@
+myscalekb-agent-base==0.1.2

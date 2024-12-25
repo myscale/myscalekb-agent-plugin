@@ -1,7 +1,7 @@
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 
-from myscalekb_agent.base.prompt import Prompt
+from myscalekb_agent_base.prompt import Prompt
 
 
 class PaperRecommendationPrompt(Prompt):

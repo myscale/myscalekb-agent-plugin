@@ -2,7 +2,7 @@ from typing import Type
 
 from pydantic import BaseModel, Field
 
-from myscalekb_agent.base.tool import BaseTool
+from myscalekb_agent_base.tool import BaseTool
 
 
 class SimilarityRecommendation(BaseTool):
