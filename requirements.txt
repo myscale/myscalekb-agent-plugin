@@ -1,1 +1,1 @@
-myscalekb-agent-base==0.1.2
+myscalekb-agent-base==0.1.3
