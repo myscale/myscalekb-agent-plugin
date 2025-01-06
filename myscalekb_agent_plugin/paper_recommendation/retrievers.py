@@ -1,5 +1,6 @@
 import asyncio
-from typing import List, Optional, Callable, Any
+from operator import attrgetter
+from typing import List, Optional, Callable, Any, Dict
 
 from myscalekb_agent_base.myscale_query import MyScaleQuery
 from myscalekb_agent_base.retriever import Retriever
@@ -52,7 +53,7 @@ class TopicRetriever(Retriever):
             text_vec = await self.embedding_model.aembed_query(text_escaping)
 
             # Construct the vector search query
-            q_str = f"""SELECT title, abstract, authors, distance(vector, {text_vec}) AS d FROM {MyScaleQuery.database}.documents {where_str} ORDER BY d ASC LIMIT 10"""
+            q_str = f"""SELECT doc_id, title, abstract, authors, distance(vector, {text_vec}) AS d FROM {MyScaleQuery.database}.documents {where_str} ORDER BY d ASC LIMIT 10"""
 
             res = await MyScaleQuery.aquery(self.myscale_client, q_str)
             return list(res.named_results())
@@ -63,8 +64,19 @@ class TopicRetriever(Retriever):
         # Flatten the results
         all_results = [item for sublist in results for item in sublist]
 
+        # Create a dictionary to store the best result for each doc_id
+        deduplicated: Dict[str, dict] = {}
+
+        for result in all_results:
+            # If we haven't seen this doc_id before, or if this result has a better (lower) distance
+            if result["doc_id"] not in deduplicated or result["d"] < deduplicated[result["doc_id"]]["d"]:
+                deduplicated[result["doc_id"]] = result
+
+        # Convert back to list and sort by distance
+        final_results = sorted(deduplicated.values(), key=lambda x: x["d"])
+
         # Apply optional output formatting
         if format_output:
-            return format_output(all_results)
+            return format_output(final_results)
 
-        return all_results
+        return final_results

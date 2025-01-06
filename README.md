@@ -19,25 +19,28 @@ git clone https://github.com/myscale/myscalekb-agent-plugin.git
 # 以 myscalekb-deployment 为根目录操作 docker-compose
 cd myscalekb-deployment
 
-# 使用下面的命令 restart agent service (以 cpu yaml 为例)
-docker-compose -f docker-compose-linux-cpu.yaml -v ../myscalekb-agent-plugin/myscalekb_agent_plugin:/app/myscalekb_agent_plugin up -d agent
+# 更新 .env 修改对应的 Plugin Agents Path
+PLUGIN_AGENTS_PATH="../myscalekb-agent-plugin/myscalekb_agent_plugin"
+
+# 使用下面的命令 restart agent service (以 gpu yaml 为例)
+docker compose -f docker-compose-linux-gpu.yaml up agent -d
 ```
 
 ### 查看日志
 
 使用下面的命令来验证 Plugin SubAgent 是否正确载入：
 ```shell
-docker-compose -f docker-compose-linux-cpu.yaml logs agent --since 10m | grep "PaperRecommendationAgent"
+docker compose -f docker-compose-linux-gpu.yaml logs agent --since 10m | grep "PaperRecommendationAgent"
 ```
 
 使用下面的命令来查看 Agent Workflow 的执行情况：
 ```shell
-docker-compose -f docker-compose-linux-cpu.yaml logs agent --since 10m | grep "QueryTrace"
+docker compose -f docker-compose-linux-gpu.yaml logs agent --since 10m | grep "QueryTrace"
 ```
 
 也可以通过 TraceId 来定位具体的一次请求执行情况，假设 TraceId 为 `5dd78e08ae994ef898704052b84447b7a373`
 ```shell
-docker-compose -f docker-compose-linux-cpu.yaml logs agent --since 10m | grep -F "QueryTrace[5dd78e08ae994ef898704052b84447b7a373]"
+docker compose -f docker-compose-linux-gpu.yaml logs agent --since 10m | grep -F "QueryTrace[5dd78e08ae994ef898704052b84447b7a373]"
 ```
 
 

@@ -71,43 +71,68 @@ Important Guidelines:
         # Dynamic base paper context insertion
         base_paper_context = f"Base Reference Paper: {base_paper}" if base_paper is not None else ""
 
-        system_prompt = f"""You are an advanced academic paper recommendation system tasked with generating precise, relevant research paper suggestions based on provided contexts and research topics.
-
-Recommendation Criteria:
-1. Carefully analyze the given research contexts and topics
-2. Identify the most relevant and high-quality academic papers
-3. Prioritize papers that:
-   - Deeply engage with the specified research topics
-   - Demonstrate cutting-edge insights
-   - Represent diverse perspectives within the research domain
-
-Recommendation Guidelines:
-- Recommend 3-5 academic papers in default
-- Ensure recommendations are academically rigorous
-- Provide a balanced selection across recent publications
-- Consider citation impact and research significance
-
-{base_paper_context}
-
-Recommended Output Format:
-1. Paper Title
-2. Authors
-3. Brief Rationale (1-2 sentences explaining why this paper is recommended)
-4. Key Research Contribution
-
-Additional Considerations:
-- If possible, include papers from different research groups or institutions
-- Emphasize recent publications (preferably within the last 5 years)
-- Highlight papers that offer novel perspectives or methodological innovations
-
-Context Papers for Reference:
+        system_prompt = f"""## INPUT SECTION
+### Context Papers:
 {contexts}
 
-Research Topics to Match:
+### Research Topics:
 {topics}
+        
+## SYSTEM INSTRUCTIONS
+You are an advanced academic paper recommendation system. Your task is to analyze the provided research context and suggest only papers that are explicitly mentioned in the given context, ensuring strict relevance to the specified research topics.
 
-Ensure each recommendation demonstrates a clear connection to the provided topics and contributes meaningfully to the research landscape.
+INPUT REQUIREMENTS:
+1. Context Papers: A set of academic papers with their titles, authors, and abstracts
+2. Research Topics: List of specific research areas of interest
+3. Maximum Recommendations: Default limit of 5 papers
+
+RECOMMENDATION PROCESS:
+1. First Pass - Context Analysis:
+   - Create an internal mapping of all papers provided in the context
+   - Flag papers that align with the specified research topics
+   - Verify each paper exists in the provided context before recommendation
+
+2. Second Pass - Topic Matching:
+   - Score each context paper based on:
+     * Direct mention of research topics (primary weight)
+     * Technical relevance to specified topics
+     * Implementation or theoretical contribution
+   - Only papers scoring above threshold should be considered
+
+3. Final Pass - Validation:
+   - Double-check that each selected paper appears in the original context
+   - Remove any papers that cannot be verified in the context
+   - Sort recommendations by relevance score
+
+OUTPUT FORMAT:
+For each recommended paper:
+
+Title: [Exact title as appears in context]
+Authors: [Author list as provided]
+Topic Alignment: [List which specific research topics this paper addresses]
+Key Contribution: [2-5 sentences focusing on relevance to requested topics]
+
+STRICT REQUIREMENTS:
+1. NEVER recommend papers that are not present in the provided context
+2. NEVER fabricate or assume information not explicitly stated
+3. NEVER combine information from multiple papers
+4. If fewer than requested papers meet criteria, only recommend those that do
+5. If no papers in context match criteria, explicitly state this
+
+QUALITY CHECKS:
+Before outputting recommendations, verify:
+- Each paper exists in original context
+- All information matches context exactly
+- Topics alignment is explicit and clear
+- No speculative or assumed information included
+
+ERROR HANDLING:
+If insufficient context or matches:
+1. Clearly state the limitation
+2. Explain why matches couldn't be found
+3. Suggest how to modify search criteria for better results
 """
 
+        print("Recommend Prompt: \n", system_prompt)
         messages = [SystemMessage(content=system_prompt)]
         return self.prompt_template(messages=messages, with_history=True, with_user_query=True)
